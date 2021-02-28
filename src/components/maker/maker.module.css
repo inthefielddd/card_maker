@@ -1,0 +1,18 @@
+@value makerGrey,makerWhite  from "../../common/colors.css";
+
+.maker{
+    width:100%;
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: makerGrey;
+}
+
+.content{
+    background-color: makerWhite;
+    width: 100%;
+    height: 100vh;
+}
