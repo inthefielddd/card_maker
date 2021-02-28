@@ -3,6 +3,8 @@ import styles from "./maker.module.css";
 import Footer from "../footer/footer";
 import Header from "../header/header";
 import { useHistory } from "react-router-dom";
+import Editor from "../editor/editor";
+import Preview from "../preview/preview";
 
 //Maker에서 suthService를통해서 로그아웃 시켜준다
 const Maker = ({ authService }) => {
@@ -22,7 +24,10 @@ const Maker = ({ authService }) => {
     return (
         <section className={styles.maker}>
             <Header onLogout={onLogout} className={styles.header} />
-            <section className={styles.content}>home Content</section>
+            <div className={styles.container}>
+                <Editor />
+                <Preview />
+            </div>
             <Footer className={styles.footer} />
         </section>
     );
