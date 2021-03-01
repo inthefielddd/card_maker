@@ -7,9 +7,10 @@ import Editor from "../editor/editor";
 import Preview from "../preview/preview";
 
 const Maker = ({ authService }) => {
-    const [cards, setCards] = useState([
-        //수동적 데이터 미리 만들어보기
-        {
+    const [cards, setCards] = useState({
+        //key=>'1': card값(value)
+        //오브젝트형태로 card를 관리
+        1:{
             id: "1",
             name: "hyeon1",
             company: "Ola",
@@ -20,7 +21,7 @@ const Maker = ({ authService }) => {
             fileName: "hj",
             fileURL: null,
         },
-        {
+        2:{
             id: "2",
             name: "hyeon2",
             company: "Ola",
@@ -31,7 +32,7 @@ const Maker = ({ authService }) => {
             fileName: "hj",
             fileURL: "hj.png",
         },
-        {
+        3: {
             id: "3",
             name: "hyeon3",
             company: "Ola",
@@ -42,7 +43,7 @@ const Maker = ({ authService }) => {
             fileName: "hj",
             fileURL: null,
         },
-    ]);
+    });
     const history = useHistory();
 
     //logout 로직
@@ -60,16 +61,30 @@ const Maker = ({ authService }) => {
         });
     });
 
-    const addCard = (card) => {
-        const updated = [...cards, card];
-        setCards(updated);
-    };
 
+    const createOrUpdateCard = (card) =>{
+        setCards(cards=> {
+            const updated = {...cards}; //기존의 cards를 복사
+            updated[card.id] = card; //받아온 card에 key를 이용해 하나씩 지정
+            return updated;
+        })
+    }
+
+
+    const deleteCard = (card) =>{
+        setCards(cards=> {
+            const updated = {...cards}; 
+            delete updated[card.id]; 
+            return updated;
+        })
+
+        
+    }
     return (
         <section className={styles.maker}>
             <Header onLogout={onLogout} className={styles.header} />
             <div className={styles.container}>
-                <Editor cards={cards} addCard={addCard} />
+                <Editor cards={cards} addCard={createOrUpdateCard} updateCard={createOrUpdateCard} deleteCard={deleteCard}/>
                 <Preview cards={cards} />
             </div>
             <Footer className={styles.footer} />
