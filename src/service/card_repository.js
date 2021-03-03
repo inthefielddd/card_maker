@@ -1,7 +1,8 @@
-import firebaseApp from './firebase';
+import { firebaseDatabase } from './firebase';
+
 class CardRepository {
     syncCards(userId, onUpdate) {
-        const ref = firebaseApp.database().ref(`${userId}/cards`);
+        const ref = firebaseDatabase.ref(`${userId}/cards`);
         ref.on('value', (snapshot) => {
             //변경될때마다 value
             const value = snapshot.val();
@@ -13,11 +14,11 @@ class CardRepository {
     }
     // return을 사용해서 변경사항이 없을때는 꺼두기
     saveCard(userId, card) {
-        firebaseApp.database().ref(`${userId}/cards/${card.id}`).set(card);
+        firebaseDatabase.ref(`${userId}/cards/${card.id}`).set(card);
     }
 
     removeCard(userId, card) {
-        firebaseApp.database().ref(`${userId}/cards/${card.id}`).remove(card);
+        firebaseDatabase.database().ref(`${userId}/cards/${card.id}`).remove(card);
     }
 }
 

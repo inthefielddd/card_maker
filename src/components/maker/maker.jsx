@@ -30,7 +30,7 @@ const Maker = ({ FileInput, authService, cardRepository }) => {
         //컴포넌트가 unMount 되었을때
         //불필요한 네트워크 사용을 최소화 해준다.
         return ()=> stopSync();
-    },[userId])
+    },[userId, cardRepository])
 
     //로그인과 관련된 useEffect
     useEffect(() => {
@@ -44,7 +44,7 @@ const Maker = ({ FileInput, authService, cardRepository }) => {
                 history.push("/");
             }
         });
-    });
+    },[authService, userId, history]);
 
     const createOrUpdateCard = (card) =>{
         setCards(cards=> {

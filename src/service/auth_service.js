@@ -1,17 +1,16 @@
-import firebase from "firebase";
-import firebaseApp from "./firebase";
+import { firebaseAuth, githubProvider, googleProvider } from './firebase';
 
 class AuthService {
     //login
     //github로 들어올수도있고 구글로 들어올 수 있기때문에 이렇게 proviederName 설정해주기
     login(providerName) {
-        const authProvider = new firebase.auth[`${providerName}AuthProvider`]();
-        return firebaseApp.auth().signInWithPopup(authProvider);
+        const authProvider = this.getProvider(providerName);
+        return firebaseAuth.signInWithPopup(authProvider);
     }
 
     //logout
     logout() {
-        firebase.auth().signOut();
+        firebaseAuth.signOut();
     }
 
     //callback 함수를 가진다
@@ -19,10 +18,21 @@ class AuthService {
     onAuthChange(onUserChanged) {
         //사용자가 바뀔때마다
         //firebase auth 안에 있는 onAuthStateChanged
-        firebase.auth().onAuthStateChanged((user) => {
+        firebaseAuth.onAuthStateChanged((user) => {
             //사용자 정보를 전달해준다
             onUserChanged(user);
         });
+    }
+
+    getProvider(providerName) {
+        switch (providerName) {
+            case 'Google':
+                return googleProvider;
+            case 'Github':
+                return githubProvider;
+            default:
+                throw new Error(`not supported provider: ${providerName}`);
+        }
     }
 }
 
