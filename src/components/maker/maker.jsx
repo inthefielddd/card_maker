@@ -6,45 +6,11 @@ import { useHistory } from "react-router-dom";
 import Editor from "../editor/editor";
 import Preview from "../preview/preview";
 
-const Maker = ({ FileInput, authService }) => {
-    const [cards, setCards] = useState({
-        //key=>'1': card값(value)
-        //오브젝트형태로 card를 관리
-        1:{
-            id: "1",
-            name: "hyeon1",
-            company: "Ola",
-            theme: "dark",
-            title: "software Engineer",
-            email: "inthefield1027@gmail.com",
-            message: "go for it",
-            fileName: "hj",
-            fileURL: null,
-        },
-        2:{
-            id: "2",
-            name: "hyeon2",
-            company: "Ola",
-            theme: "colorful",
-            title: "singer",
-            email: "inthefield1027@gmail.com",
-            message: "go for it",
-            fileName: "hj",
-            fileURL: "hj.png",
-        },
-        3: {
-            id: "3",
-            name: "hyeon3",
-            company: "Ola",
-            theme: "light",
-            title: "writer",
-            email: "inthefield1027@gmail.com",
-            message: "go for it",
-            fileName: "hj",
-            fileURL: null,
-        },
-    });
+const Maker = ({ FileInput, authService, cardRepository }) => {
     const history = useHistory();
+    const historyState = history?.location.state;
+    const [cards, setCards] = useState({});
+    const [userId, setUserId] = useState(historyState && historyState.id );
 
     //logout 로직
     //Maker에서 suthService를통해서 로그아웃 시켜준다
@@ -52,15 +18,33 @@ const Maker = ({ FileInput, authService }) => {
         authService.logout();
     };
 
+    //사용자의 id가 변경될때마다
+    useEffect(()=>{
+        if(!userId){
+            return; //유저없을떄
+        }
+        //유저가 있을때
+        const stopSync= cardRepository.syncCards(userId, cards => {
+            setCards(cards);
+        })
+        //컴포넌트가 unMount 되었을때
+        //불필요한 네트워크 사용을 최소화 해준다.
+        return ()=> stopSync();
+    },[userId])
+
+    //로그인과 관련된 useEffect
     useEffect(() => {
         authService.onAuthChange((user) => {
-            if (!user) {
+            if (user) {
+                //유저가 있다면
+                setUserId(user.uid);
+                console.log(userId);
+            }else{
                 //유저가 없다면 다시 홈화면 렌더
                 history.push("/");
             }
         });
     });
-
 
     const createOrUpdateCard = (card) =>{
         setCards(cards=> {
@@ -68,8 +52,8 @@ const Maker = ({ FileInput, authService }) => {
             updated[card.id] = card; //받아온 card에 key를 이용해 하나씩 지정
             return updated;
         })
+        cardRepository.saveCard(userId, card);
     }
-
 
     const deleteCard = (card) =>{
         setCards(cards=> {
@@ -77,9 +61,9 @@ const Maker = ({ FileInput, authService }) => {
             delete updated[card.id]; 
             return updated;
         })
-
-        
+        cardRepository.removeCard(userId, card);
     }
+
     return (
         <section className={styles.maker}>
             <Header onLogout={onLogout} className={styles.header} />

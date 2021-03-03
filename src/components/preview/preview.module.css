@@ -2,6 +2,7 @@
 
 .preview{
     flex-basis: 50%;
+    overflow-y: auto;
 }
 
 .title{
@@ -18,5 +19,4 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    
 }
