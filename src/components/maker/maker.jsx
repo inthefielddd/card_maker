@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./maker.module.css";
 import Footer from "../footer/footer";
 import Header from "../header/header";
@@ -14,9 +14,9 @@ const Maker = ({ FileInput, authService, cardRepository }) => {
 
     //logout 로직
     //Maker에서 suthService를통해서 로그아웃 시켜준다
-    const onLogout = () => {
+    const onLogout = useCallback(() => {
         authService.logout();
-    };
+    },[authService]);
 
     //사용자의 id가 변경될때마다
     useEffect(()=>{
@@ -38,7 +38,6 @@ const Maker = ({ FileInput, authService, cardRepository }) => {
             if (user) {
                 //유저가 있다면
                 setUserId(user.uid);
-                console.log(userId);
             }else{
                 //유저가 없다면 다시 홈화면 렌더
                 history.push("/");
